@@ -237,15 +237,21 @@ $(".card .list-group").sortable({
   tolerance: "pointer",
   helper: "clone",
   activate: function(event) {
-    console.log("deactivate", this);
+    $(this).addClass("dropover");
+    $(".bottom-trash").addClass("bottom-trash-drag");
+    console.log("activate", this);
   },
   deactivate: function(event) {
+    $(this).removeClass("dropover");
+    $(".bottom-trash").removeClass("bottom-trash-drag");
     console.log("deactivate", this);
   },
   over: function(event) {
+    $(event.target).addClass("dropover-active");
     console.log("over", event.target);
   },
   out: function(event) {
+    $(this).removeClass("dropover-active");
     console.log("out", event.target);
   },
   //loop over current set of children in a sortable list
@@ -298,9 +304,11 @@ $("#trash").droppable({
     console.log("drop");
   },
   over: function(event, ui) {
+    $(".bottom-trash").addClass("bottom-trash-active");
     console.log("over");
   },
   out: function(event, ui) {
+    $(".bottom-trash").removeClass("bottom-trash-active");
     console.log("out");
   }
 })
@@ -311,3 +319,9 @@ $("#modalDueDate").datepicker({
   minDate: 0
 });
 
+//every 30 min, it runs the auditTask function, to check if any updates in regards to the current day/time are needed.
+setInterval(function() {
+  $(".card .list-group-item").each(function(index, el) {
+    auditTask(el);
+  });
+}, (1000 * 60) * 30);
